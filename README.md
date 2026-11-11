@@ -1,4 +1,4 @@
-# Creative Playground
+# Idioglossia.lang
 
 A minimal TypeScript monorepo for interactive and real-time art experiments. It pairs a Vite-powered React client with an Express and Socket.IO server, while keeping shared event contracts in one small package.
 
@@ -25,12 +25,12 @@ The client runs at `http://localhost:5173`, and the server runs at `http://local
 
 ## Scripts
 
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Run the client and server together |
-| `npm run build` | Build all workspaces |
-| `npm run typecheck` | Type-check all workspaces |
-| `npm run lint` | Lint TypeScript and React source |
+| Command             | Purpose                            |
+| ------------------- | ---------------------------------- |
+| `npm run dev`       | Run the client and server together |
+| `npm run build`     | Build all workspaces               |
+| `npm run typecheck` | Type-check all workspaces          |
+| `npm run lint`      | Lint TypeScript and React source   |
 
 ## Structure
 
