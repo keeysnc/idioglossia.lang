@@ -1,0 +1,43 @@
+.interactionElement {
+	display: flex;
+	flex-direction: column;
+	padding: 10px;
+	margin: 10px 0;
+	border-radius: 10px;
+	height: 100%;
+	padding: 2rem 1.5rem;
+}
+
+.interactionElement:hover {
+	cursor: pointer;
+}
+
+.interactionElement:focus-visible {
+	outline: 2px solid #edb926;
+	outline-offset: 4px;
+}
+
+.interactionElement .elementContent {
+	margin-top: 30px;
+}
+
+.elementHeader {
+	display: flex;
+	justify-content: space-between;
+}
+
+.elementHeader h1 {
+	margin: 0;
+	display: flex;
+	align-items: center;
+}
+
+.selectionStatus {
+	color: #edb926;
+	font-size: 0.875rem;
+	font-weight: 600;
+}
+
+.selectionStatus--selected {
+	color: #22c55e;
+}
