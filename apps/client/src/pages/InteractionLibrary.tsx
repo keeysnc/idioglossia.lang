@@ -6,6 +6,7 @@ import { SocketContext } from "../provider/Socket/SocketContext";
 import { interactionData } from "../data/interactions";
 import type { CreativePingPayload, InteractionRejectedPayload } from "@creative/shared";
 import { InteractiveLibraryHeader } from "../components/header/Header";
+import { QRCodeSVG } from "qrcode.react";
 
 const InteractionLibrary = () => {
 	const { selectedInteractionId, setSelectedInteractionId } = useContext(InteractionContext);
@@ -118,14 +119,23 @@ const InteractionLibrary = () => {
 								×
 							</button>
 							<h2 id="viewer-prompt-title">View interactions live</h2>
-							<p>Open the Interaction Viewer in a new tab before selecting and submitting an interaction.</p>
-							<a href="/interaction-viewer" target="_blank" rel="noreferrer" onClick={() => setShowViewerPrompt(false)}>
-								Open Interaction Viewer
-							</a>
+							<p>Scan the QR code to open the Interaction Viewer.</p>
+							<div className="viewerQrCode">
+								<QRCodeSVG
+									value={new URL("/interaction-viewer", window.location.origin).href}
+									size={208}
+									marginSize={4}
+									title="QR code for the Interaction Viewer"
+								/>
+							</div>
 						</div>
 					</div>
 				)}
-				<InteractiveLibraryHeader handleSubmit={handleSubmit} submitDisabled={!selectedInteractionId} />
+				<InteractiveLibraryHeader
+					handleSubmit={handleSubmit}
+					submitDisabled={!selectedInteractionId}
+					onShowViewerQr={() => setShowViewerPrompt(true)}
+				/>
 				<h1 className="interactionLibraryTitle">Select an interaction</h1>
 
 				<div className="interactionLibraryContent">

@@ -5,10 +5,37 @@ import { interactionData } from "../data/interactions";
 import P5Canvas from "../components/P5Canvas";
 
 const RESET_INTERVAL_MS = 5 * 60 * 1000;
+const VIEWER_SESSION_KEY = "idioglossia-viewer-session";
+
+type ViewerSession = {
+	resetAt: number;
+	interactions: CreativePingPayload[];
+};
+
+function saveSession(session: ViewerSession) {
+	try {
+		window.sessionStorage.setItem(VIEWER_SESSION_KEY, JSON.stringify(session));
+	} catch {}
+}
+
+function loadSession(): ViewerSession {
+	try {
+		const stored = window.sessionStorage.getItem(VIEWER_SESSION_KEY);
+		if (stored) {
+			const session = JSON.parse(stored) as ViewerSession;
+			if (Number.isFinite(session.resetAt) && session.resetAt > Date.now() && Array.isArray(session.interactions)) {
+				return session;
+			}
+		}
+	} catch {}
+	const session = { resetAt: Date.now() + RESET_INTERVAL_MS, interactions: [] };
+	saveSession(session);
+	return session;
+}
 
 const InteractionViewer = () => {
 	const { socket } = useContext(SocketContext);
-	const [interactions, setInteractions] = useState<CreativePingPayload[]>([]);
+	const [session, setSession] = useState<ViewerSession>(loadSession);
 	const [canvasVersion, setCanvasVersion] = useState(0);
 
 	useEffect(() => {
@@ -17,7 +44,11 @@ const InteractionViewer = () => {
 		}
 
 		const handleInteractionCreated = (payload: CreativePingPayload) => {
-			setInteractions((currentInteractions) => [...currentInteractions, payload]);
+			setSession((current) => {
+				const next = { ...current, interactions: [...current.interactions, payload] };
+				saveSession(next);
+				return next;
+			});
 		};
 
 		socket.on("interaction:created", handleInteractionCreated);
@@ -25,18 +56,23 @@ const InteractionViewer = () => {
 		return () => {
 			socket.off("interaction:created", handleInteractionCreated);
 		};
-	}, [socket, interactions]);
+	}, [socket]);
 
 	useEffect(() => {
-		const resetInterval = window.setInterval(() => {
-			setInteractions([]);
-			setCanvasVersion((version) => version + 1);
-		}, RESET_INTERVAL_MS);
+		const resetTimeout = window.setTimeout(
+			() => {
+				const next = { resetAt: Date.now() + RESET_INTERVAL_MS, interactions: [] };
+				saveSession(next);
+				setSession(next);
+				setCanvasVersion((version) => version + 1);
+			},
+			Math.max(0, session.resetAt - Date.now()),
+		);
 
 		return () => {
-			window.clearInterval(resetInterval);
+			window.clearTimeout(resetTimeout);
 		};
-	}, []);
+	}, [session.resetAt]);
 
 	if (!socket) {
 		throw new Error("Socket not available");
@@ -52,7 +88,7 @@ const InteractionViewer = () => {
 		// 	))} */}
 		// </div>
 		<main className="interactionViewerPage">
-			<P5Canvas key={canvasVersion} interactionData={interactionData} submittedInteractions={interactions} />
+			<P5Canvas key={canvasVersion} interactionData={interactionData} submittedInteractions={session.interactions} />
 		</main>
 	);
 };

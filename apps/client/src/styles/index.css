@@ -251,13 +251,14 @@ h1 {
 	line-height: 1.5;
 }
 
-.viewerPromptContent a {
-	display: inline-block;
-	padding: 0.5rem 1rem;
-	background: #fff;
-	color: #000;
-	border-radius: 0.25rem;
-	text-decoration: none;
+.viewerQrCode {
+	display: flex;
+	justify-content: center;
+}
+
+.viewerQrCode svg {
+	width: min(100%, 208px);
+	height: auto;
 }
 
 .interactionViewer {
