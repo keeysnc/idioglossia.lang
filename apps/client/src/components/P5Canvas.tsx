@@ -134,7 +134,7 @@ export default function P5Canvas({ interactionData, submittedInteractions }: P5C
 			};
 
 			p.draw = () => {
-				p.background("#101113");
+				p.background("#272727");
 				disperseShapes();
 				drawPoints(connections());
 			};

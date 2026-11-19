@@ -1,0 +1,5 @@
+{
+	"buildCommand": "npm run build -w @creative/shared && npm run build -w @creative/client",
+	"outputDirectory": "apps/client/dist",
+	"rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
